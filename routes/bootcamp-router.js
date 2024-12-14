@@ -5,6 +5,6 @@ const {getAllBootcamps,getBootcamp,createBootcamp} = require('../controllers/boo
 // Route through controller
 router.route('/').get(getAllBootcamps).post(createBootcamp);
 
-router.route('/:id').get(getBootcamp);
+router.route('/:name').get(getBootcamp);
 
 module.exports=router;

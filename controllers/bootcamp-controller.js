@@ -1,44 +1,44 @@
 const BootcampSchema = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/errorResponse');
 
-// Remote data
-const cars=[
-    {carId:'56283',carName:'Nano'},
-    {carId:'44123',carName:'Safari'}
-];
 
 // Get all bootcamps
-exports.getAllBootcamps=async (req,res,next)=>{
-    // res.json({status:'success',result:cars});
+exports.getAllBootcamps = async (req, res, next) => {
     try {
-        const bootcamps=await BootcampSchema.find();
-        res.json({status:'success',count:`${bootcamps.length}`,data:bootcamps});
+        const bootcamps = await BootcampSchema.find();
+        res.json({ status: 'success',code:res.statusCode, count: `${bootcamps.length}`, data: bootcamps });
     } catch (error) {
-        res.status(400).json({status:'failure',message:`${error}`});
+        // res.status(400).json({status:'failure',message:`${error}`});
+        next(new ErrorResponse(error, 400));
     }
 }
 
 // Get bootcamp by name
-exports.getBootcamp=async (req,res,next)=>{
-    // const carObj=cars.find(car=>car.carId===req.params.id);
-    // const msg=carObj?`Details of Car ID - ${req.params.id}`:`Car ID - ${req.params.id} not found`;
-    // res.json({status:'success',message:msg,result:carObj});
-
+exports.getBootcamp = async (req, res, next) => {
+    // console.log('----res----',res)
     try {
-        const bootcamp=await BootcampSchema.find({name:req.params.id});
+        const bootcamp = await BootcampSchema.find({ slug: req.params.name });
         console.log(`find by name-> ${bootcamp}`);
-        res.json({status:'success',data:bootcamp});
+        if (bootcamp.length) {
+            res.json({ status: 'success', code:res.statusCode, data: bootcamp });
+        } else {
+            next(new ErrorResponse(`No bootcamp found with name - ${req.params.name}`, 404));
+        }
     } catch (error) {
-        res.status(400).json({status:'failure',message:`${error}`});
+        // res.status(400).json({status:'failure',message:`${error}`});
+        next(new ErrorResponse(`No bootcamp found with name - ${req.params.name}`, 404));
     }
 }
 
 // Create bootcamp
-exports.createBootcamp=async (req,res,next)=>{
-    console.log(`Body-> ${JSON.stringify(req.body)}`);
+exports.createBootcamp = async (req, res, next) => {
+    // console.log(`Body-> ${JSON.stringify(req.body)}`);
     try {
-        const bootcamp=await BootcampSchema.create(req.body);
-        res.json({status:'success',message:`Bootcamp created with name - ${bootcamp.name}`,data:bootcamp});
+        const bootcamp = await BootcampSchema.create(req.body);
+        res.json({ status: 'success',code:res.statusCode, message: `Bootcamp created with name - ${bootcamp.name}`, data: bootcamp });
     } catch (error) {
-        res.status(400).json({status:'failure',message:`${error}`});
+        // res.status(400).json({status:'failure',message:`${error}`});
+        // console.log('create bootcamp error',JSON.parse(error));
+        next(new ErrorResponse(error, 400));
     }
 }
