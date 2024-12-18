@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const bootcampRouter=require('./routes/bootcamp-router');
 const userRouter=require('./routes/user-router');
 const errorHandler = require('./middleware/error');
+const cookieParser = require('cookie-parser');
 
 // Configuring .env file
 dotenv.config({path:'./config/config.env'});
@@ -19,6 +20,9 @@ app.use(morgan('dev'));
 
 // Body parser
 app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
 
 //Route files
 app.use('/api/v1/bootcamps',bootcampRouter);
