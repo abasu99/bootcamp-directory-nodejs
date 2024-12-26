@@ -16,12 +16,21 @@ const BootcampSchema = new mongoose.Schema({
         maxlength: [500, 'description cannot be more than 500 characters']
     },
     website: String,
-    jobGuarantee: Boolean
+    jobGuarantee: Boolean,
+    createdBy: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Owner required for bootcamp']
+    }
+},
+{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 });
 
-BootcampSchema.pre('save',function(next){
-this.slug= slugify(this.name,{lower:true});
-next();
+BootcampSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true });
+    next();
 })
 
-module.exports=mongoose.model('BootcampSchema',BootcampSchema);
+module.exports = mongoose.model('BootcampSchema', BootcampSchema);
